@@ -1,10 +1,4 @@
 services:
-  app:
-    build:
-      context: .
-      target: build
-    depends_on:
-      - mysql
   mysql:
     image: "mysql:8.0.33"
     ports:
