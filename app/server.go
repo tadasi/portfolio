@@ -29,5 +29,6 @@ func hoge(ec echo.Context) error {
 }
 
 func fuga(ec echo.Context) error {
+
 	return ec.String(http.StatusOK, "fuga")
 }
