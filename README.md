@@ -10,9 +10,26 @@
 cp sample.env .env
 ```
 
+### 必要なパッケージをインストール
+```
+brew install golang-migrate
+go install github.com/magefile/mage@v1.15.0
+```
+
 ### Docker 起動
 ```
 docker compose up -d
+```
+
+### マイグレーション実行（Up, Down）
+```
+mage migrate:up
+mage migrate:down
+```
+
+### マイグレーションのスキーマバージョン強制変更
+```
+mage migrate:force <バージョン番号>
 ```
 
 ### ローカルサーバー起動

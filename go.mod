@@ -2,7 +2,11 @@ module github.com/tadasi/portfolio
 
 go 1.22.4
 
-require github.com/labstack/echo/v4 v4.12.0
+require (
+	github.com/joho/godotenv v1.5.1
+	github.com/labstack/echo/v4 v4.12.0
+	github.com/magefile/mage v1.15.0
+)
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
