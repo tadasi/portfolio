@@ -12,8 +12,8 @@ cp sample.env .env
 
 ### 必要なパッケージをインストール
 ```
-brew install golang-migrate
 go install github.com/magefile/mage@v1.15.0
+mage install
 ```
 
 ### Docker 起動
@@ -34,5 +34,12 @@ mage migrate:force <バージョン番号>
 
 ### ローカルサーバー起動
 ```
-go run app/server.go
+go run application/server.go
+```
+
+## その他、参考情報
+### ファイル・コードの自動生成
+MySQL DB を変更した際に実行する
+```
+ mage generate:sqlboiler
 ```
