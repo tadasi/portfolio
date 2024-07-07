@@ -7,11 +7,17 @@ import (
 
 var driver = "mysql"
 
-func Open() (*sqlx.DB, error) {
+type DB struct {
+	*sqlx.DB
+}
+
+func Open() (*DB, error) {
 	config := infrastructure.GetConfig()
 	db, err := sqlx.Open(driver, config.MySQL.DataSource())
 	if err != nil {
 		return nil, err
 	}
-	return db, nil
+	return &DB{
+		DB: db,
+	}, nil
 }

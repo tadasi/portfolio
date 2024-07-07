@@ -34,7 +34,7 @@ mage migrate:force <バージョン番号>
 
 ### ローカルサーバー起動
 ```
-go run application/server.go
+go run application/server/main.go
 ```
 
 ## その他、参考情報
