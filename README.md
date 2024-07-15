@@ -43,3 +43,10 @@ MySQL DB を変更した際に実行する
 ```
  mage generate:sqlboiler
 ```
+
+### API 設計書の生成・確認
+```
+mage generate:redoc
+```
+
+ブラウザ上で `portfolio/redoc-static.html` ファイルを確認

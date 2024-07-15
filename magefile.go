@@ -30,6 +30,7 @@ func Install() {
 	run("go", "install", "github.com/volatiletech/sqlboiler/v4@v4.16.2")
 	run("go", "install", "github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@v4.16.2")
 	run("go", "mod", "tidy")
+	run("npm", "i", "-g", "@redocly/cli@latest")
 }
 
 // MySQL マイグレーションコマンド
@@ -78,4 +79,8 @@ func (Generate) Sqlboiler() {
 		"MYSQL_SSLMODE": "false",
 	}
 	runWithEnv(env, "sqlboiler", "mysql", "-o", "infrastructure/mysql/tables", "-p", "tables", "--no-tests", "--wipe")
+}
+
+func (Generate) Redoc() {
+	run("redocly", "build-docs", "api/openapi/root.yaml")
 }

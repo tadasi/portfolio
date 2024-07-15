@@ -1,0 +1,7 @@
+apis:
+  portfolio:
+    root: ./api/openapi/root.yaml
+
+rules:
+  no-empty-servers: error
+  info-license: off

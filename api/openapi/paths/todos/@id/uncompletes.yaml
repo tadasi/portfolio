@@ -1,0 +1,23 @@
+patch:
+  summary: 'TODO を未完了にする'
+  parameters:
+    - in: 'path'
+      name: 'id'
+      required: true
+      schema:
+        description: 'TODO ID（必須）'
+        type: 'string'
+        format: 'uuid'
+        minLength: 1
+  responses:
+    200:
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - 'todo'
+            properties:
+              todo: 
+                $ref: '../../../root.yaml#/components/schemas/Todo'

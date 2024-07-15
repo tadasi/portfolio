@@ -1,0 +1,22 @@
+openapi: 3.1.0
+
+info:
+  title: 'BackEnd Portfolio APIs'
+  version: '1.0.0'
+  description: |
+    # BackEnd Portfolio 用 API 設計書
+
+paths:
+  /todos:
+    $ref: './paths/todos.yaml'
+  /todos/{id}:
+    $ref: './paths/todos/@id.yaml'
+  /todos/{id}/completes:
+    $ref: './paths/todos/@id/completes.yaml'
+  /todos/{id}/uncompletes:
+    $ref: './paths/todos/@id/uncompletes.yaml'
+
+components:
+  schemas:
+    Todo:
+      $ref: './components/schemas/Todo.yaml'

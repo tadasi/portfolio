@@ -13,7 +13,7 @@ type TodoInteractor interface {
 	FindTodo(ctx context.Context, input *FindTodoInput) (*FindTodoOutput, error)
 	CreateTodo(ctx context.Context, input *CreateTodoInput) (*CreateTodoOutput, error)
 	UpdateTodo(ctx context.Context, input *UpdateTodoInput) (*UpdateTodoOutput, error)
-	DeleteTodo(ctx context.Context, input *DeleteTodoInput) (*DeleteTodoOutput, error)
+	DeleteTodo(ctx context.Context, input *DeleteTodoInput) error
 	CompleteTodo(ctx context.Context, input *CompleteTodoInput) (*CompleteTodoOutput, error)
 	UncompleteTodo(ctx context.Context, input *UncompleteTodoInput) (*UncompleteTodoOutput, error)
 }
@@ -43,22 +43,19 @@ type UpdateTodoOutput struct {
 type DeleteTodoInput struct {
 	TodoID string
 }
-type DeleteTodoOutput struct {
-	TodoID string
-}
 
 type CompleteTodoInput struct {
 	TodoID string
 }
 type CompleteTodoOutput struct {
-	TodoID string
+	Todo *models.Todo
 }
 
 type UncompleteTodoInput struct {
 	TodoID string
 }
 type UncompleteTodoOutput struct {
-	TodoID string
+	Todo *models.Todo
 }
 
 type todoInteractor struct {
@@ -127,25 +124,23 @@ func (i *todoInteractor) UpdateTodo(ctx context.Context, input *UpdateTodoInput)
 	}, nil
 }
 
-func (i *todoInteractor) DeleteTodo(ctx context.Context, input *DeleteTodoInput) (*DeleteTodoOutput, error) {
+func (i *todoInteractor) DeleteTodo(ctx context.Context, input *DeleteTodoInput) error {
 	todo, err := i.todoRepository.Find(
 		ctx,
 		input.TodoID,
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := i.todoRepository.Delete(
 		ctx,
 		todo,
 	); err != nil {
-		return nil, err
+		return err
 	}
 
-	return &DeleteTodoOutput{
-		TodoID: todo.ID,
-	}, nil
+	return nil
 }
 
 func (i *todoInteractor) CompleteTodo(ctx context.Context, input *CompleteTodoInput) (*CompleteTodoOutput, error) {
@@ -167,7 +162,7 @@ func (i *todoInteractor) CompleteTodo(ctx context.Context, input *CompleteTodoIn
 	}
 
 	return &CompleteTodoOutput{
-		TodoID: updatedTodo.ID,
+		Todo: updatedTodo,
 	}, nil
 }
 
@@ -190,6 +185,6 @@ func (i *todoInteractor) UncompleteTodo(ctx context.Context, input *UncompleteTo
 	}
 
 	return &UncompleteTodoOutput{
-		TodoID: updatedTodo.ID,
+		Todo: updatedTodo,
 	}, nil
 }

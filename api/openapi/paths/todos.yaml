@@ -1,0 +1,44 @@
+post:
+  summary: 'TODO を作成する'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: 'object'
+          required:
+            - 'content'
+          properties:
+            content: 
+              type: 'string'
+              required: true
+  responses:
+    201:
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - 'id'
+            properties:
+              id: 
+                description: 'TODO ID'
+                type: 'string'
+                format: 'uuid'
+    400:
+      description: 'Bad Request'
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - 'id'
+              - 'message'
+            properties:
+              id:
+                type: 'string'
+                description: 'エラー ID'
+              message:
+                type: 'string'
+                description: 'エラーメッセージ'

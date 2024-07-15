@@ -1,0 +1,75 @@
+get:
+  summary: 'TODO を取得する'
+  parameters:
+    - in: 'path'
+      name: 'id'
+      required: true
+      schema:
+        description: 'TODO ID（必須）'
+        type: 'string'
+        format: 'uuid'
+        minLength: 1
+  responses:
+    200:
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - 'todo'
+            properties:
+              todo: 
+                $ref: '../../root.yaml#/components/schemas/Todo'
+
+patch:
+  summary: 'TODO を更新する'
+  parameters:
+    - in: 'path'
+      name: 'id'
+      required: true
+      schema:
+        description: 'TODO ID（必須）'
+        type: 'string'
+        format: 'uuid'
+        minLength: 1
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: 'object'
+          required:
+            - 'content'
+          properties:
+            content:
+              description: 'TODO 内容'
+              type: 'string'
+  responses:
+    200:
+      description: 'OK'
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - 'todo'
+            properties:
+              todo: 
+                $ref: '../../root.yaml#/components/schemas/Todo'
+    400:
+      description: 'Bad Request'
+      content:
+        application/json:
+          schema:
+            type: 'object'
+            required:
+              - 'id'
+              - 'message'
+            properties:
+              id:
+                type: 'string'
+                description: 'エラー ID'
+              message:
+                type: 'string'
+                description: 'エラーメッセージ'

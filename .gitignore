@@ -1,5 +1,5 @@
 # 環境変数
 .env
 
-# 一時ファイル
-var/tmp
+# openapi 生成ファイル
+redoc-static.html

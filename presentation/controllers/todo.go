@@ -19,12 +19,37 @@ func NewTodoController(i *do.Injector) (*TodoController, error) {
 }
 
 func (c *TodoController) Mount(group *echo.Group) {
-	group.GET("/:id", c.Show)
 	group.POST("/", c.Create)
+	group.GET("/:id", c.Show)
 	group.PATCH("/:id", c.Update)
 	group.DELETE("/:id", c.Delete)
-	group.PATCH("/completes/:id", c.Complete)
-	group.PATCH("/uncompletes/:id", c.Uncomplete)
+	group.PATCH("/:id/completes", c.Complete)
+	group.PATCH("/:id/uncompletes", c.Uncomplete)
+}
+
+func (c *TodoController) Create(ec echo.Context) error {
+	params := &struct {
+		Content string `json:"content" validate:"required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	output, err := c.todoInteractor.CreateTodo(
+		ec.Request().Context(),
+		&usecases.CreateTodoInput{
+			Content: params.Content,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return ec.JSON(http.StatusCreated, map[string]string{
+		"id": output.TodoID,
+	})
 }
 
 func (c *TodoController) Show(ec echo.Context) error {
@@ -48,31 +73,6 @@ func (c *TodoController) Show(ec echo.Context) error {
 		return err
 	}
 	return ec.JSON(http.StatusOK, output)
-}
-
-func (c *TodoController) Create(ec echo.Context) error {
-	params := &struct {
-		Content string `json:"content" validate:"required"`
-	}{}
-	if err := ec.Bind(params); err != nil {
-		return err
-	}
-	if err := ec.Validate(params); err != nil {
-		return err
-	}
-
-	output, err := c.todoInteractor.CreateTodo(
-		ec.Request().Context(),
-		&usecases.CreateTodoInput{
-			Content: params.Content,
-		},
-	)
-	if err != nil {
-		return err
-	}
-	return ec.JSON(http.StatusOK, map[string]string{
-		"id": output.TodoID,
-	})
 }
 
 func (c *TodoController) Update(ec echo.Context) error {
@@ -111,16 +111,15 @@ func (c *TodoController) Delete(ec echo.Context) error {
 		return err
 	}
 
-	output, err := c.todoInteractor.DeleteTodo(
+	if err := c.todoInteractor.DeleteTodo(
 		ec.Request().Context(),
 		&usecases.DeleteTodoInput{
 			TodoID: params.TodoID,
 		},
-	)
-	if err != nil {
+	); err != nil {
 		return err
 	}
-	return ec.JSON(http.StatusOK, output.TodoID)
+	return ec.JSON(http.StatusNoContent, nil)
 }
 
 func (c *TodoController) Complete(ec echo.Context) error {
@@ -143,7 +142,7 @@ func (c *TodoController) Complete(ec echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return ec.JSON(http.StatusOK, output.TodoID)
+	return ec.JSON(http.StatusOK, output)
 }
 
 func (c *TodoController) Uncomplete(ec echo.Context) error {
@@ -166,5 +165,5 @@ func (c *TodoController) Uncomplete(ec echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return ec.JSON(http.StatusOK, output.TodoID)
+	return ec.JSON(http.StatusOK, output)
 }

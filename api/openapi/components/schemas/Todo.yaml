@@ -1,0 +1,29 @@
+description: 'TODO'
+type: 'object'
+required:
+  - 'id'
+  - 'content'
+  - 'created_at'
+  - 'updated_at'
+  - 'completed_at'
+properties:
+  id:
+    description: 'TODO ID'
+    type: 'string'
+    format: 'uuid'
+  content:
+    description: 'TODO 内容'
+    type: 'string'
+  created_at:
+    description: 'TODO 作成日時'
+    type: 'string'
+    format: 'date-time'
+  updated_at:
+    description: 'TODO 更新日時'
+    type: 'string'
+    format: 'date-time'
+  completed_at:
+    description: 'TODO 完了日時'
+    type: 'string'
+    format: 'date-time'
+    nullable: true
