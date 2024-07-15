@@ -13,6 +13,7 @@ func RegisterInjector() *do.Injector {
 	//
 	// Infrastructure
 	//
+	// Repositories
 	do.Provide(injector, repositories.NewTodoRepository)
 
 	//

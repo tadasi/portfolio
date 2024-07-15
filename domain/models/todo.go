@@ -8,6 +8,10 @@ import (
 	"github.com/samber/do"
 )
 
+//
+// Entities
+//
+
 type Todo struct {
 	ID          string     // TODO ID
 	Content     string     // TODO 内容
@@ -20,6 +24,10 @@ type TodoRepository interface {
 	Find(ctx context.Context, id string) (*Todo, error)
 	Create(ctx context.Context, todo *Todo) error
 }
+
+//
+// Factories
+//
 
 type TodoFactory interface {
 	Create(options *TodoFactoryOptions) *Todo
