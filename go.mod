@@ -5,9 +5,9 @@ go 1.22.4
 require (
 	github.com/friendsofgo/errors v0.9.2
 	github.com/go-sql-driver/mysql v1.8.1
+	github.com/google/uuid v1.3.0
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
-	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/magefile/mage v1.15.0
 	github.com/samber/do v1.6.0

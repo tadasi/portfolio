@@ -8,6 +8,7 @@ import (
 	"github.com/tadasi/portfolio/infrastructure/mysql"
 	"github.com/tadasi/portfolio/infrastructure/mysql/tables"
 	"github.com/volatiletech/null/v8"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 )
 
 type TodoRepository struct {
@@ -29,6 +30,18 @@ func (r *TodoRepository) Find(ctx context.Context, id string) (*models.Todo, err
 		return nil, err
 	}
 	return r.convertToModel(todo), nil
+}
+
+func (r *TodoRepository) Create(ctx context.Context, todo *models.Todo) error {
+	db, err := mysql.Open()
+	if err != nil {
+		return err
+	}
+	record := r.convertToTable(todo)
+	if err := record.Insert(ctx, db, boil.Infer()); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *TodoRepository) convertToModel(record *tables.Todo) *models.Todo {

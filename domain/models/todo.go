@@ -3,6 +3,9 @@ package models
 import (
 	"context"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/samber/do"
 )
 
 type Todo struct {
@@ -15,4 +18,30 @@ type Todo struct {
 
 type TodoRepository interface {
 	Find(ctx context.Context, id string) (*Todo, error)
+	Create(ctx context.Context, todo *Todo) error
+}
+
+type TodoFactory interface {
+	Create(options *TodoFactoryOptions) *Todo
+}
+
+type TodoFactoryOptions struct {
+	Content string // TODO 内容
+}
+
+type todoFactory struct{}
+
+func NewTodoFactory(i *do.Injector) (TodoFactory, error) {
+	return &todoFactory{}, nil
+}
+
+func (f *todoFactory) Create(options *TodoFactoryOptions) *Todo {
+	now := time.Now()
+	return &Todo{
+		ID:          uuid.NewString(),
+		Content:     options.Content,
+		CreatedAt:   now,
+		UpdatedAt:   now,
+		CompletedAt: nil,
+	}
 }
