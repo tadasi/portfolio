@@ -23,6 +23,8 @@ func (c *TodoController) Mount(group *echo.Group) {
 	group.POST("/", c.Create)
 	group.PATCH("/:id", c.Update)
 	group.DELETE("/:id", c.Delete)
+	group.PATCH("/completes/:id", c.Complete)
+	group.PATCH("/uncompletes/:id", c.Uncomplete)
 }
 
 func (c *TodoController) Show(ec echo.Context) error {
@@ -112,6 +114,52 @@ func (c *TodoController) Delete(ec echo.Context) error {
 	output, err := c.todoInteractor.DeleteTodo(
 		ec.Request().Context(),
 		&usecases.DeleteTodoInput{
+			TodoID: params.TodoID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return ec.JSON(http.StatusOK, output.TodoID)
+}
+
+func (c *TodoController) Complete(ec echo.Context) error {
+	params := &struct {
+		TodoID string `param:"id" validate:"uuid,required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	output, err := c.todoInteractor.CompleteTodo(
+		ec.Request().Context(),
+		&usecases.CompleteTodoInput{
+			TodoID: params.TodoID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return ec.JSON(http.StatusOK, output.TodoID)
+}
+
+func (c *TodoController) Uncomplete(ec echo.Context) error {
+	params := &struct {
+		TodoID string `param:"id" validate:"uuid,required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	output, err := c.todoInteractor.UncompleteTodo(
+		ec.Request().Context(),
+		&usecases.UncompleteTodoInput{
 			TodoID: params.TodoID,
 		},
 	)
