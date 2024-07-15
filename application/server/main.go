@@ -12,6 +12,7 @@ import (
 
 func main() {
 	ec := echo.New()
+	ec.Validator = application.NewValidator()
 
 	ec.Use(middleware.Logger())
 	ec.Use(middleware.Recover())

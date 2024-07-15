@@ -37,14 +37,26 @@ func (c *TodoController) Show(ec echo.Context) error {
 }
 
 func (c *TodoController) Create(ec echo.Context) error {
-	_, err := c.todoInteractor.CreateTodo(
+	params := &struct {
+		Content string `json:"content" validate:"required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	todo, err := c.todoInteractor.CreateTodo(
 		ec.Request().Context(),
 		&usecases.CreateTodoInput{
-			Content: ec.Param("Content"), // TODO: Bind, Validation をかける
+			Content: params.Content,
 		},
 	)
 	if err != nil {
 		return err
 	}
-	return nil
+	return ec.JSON(http.StatusOK, map[string]string{
+		"id": todo.TodoID,
+	})
 }
