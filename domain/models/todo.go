@@ -23,6 +23,8 @@ type Todo struct {
 type TodoRepository interface {
 	Find(ctx context.Context, id string) (*Todo, error)
 	Create(ctx context.Context, todo *Todo) error
+	Update(ctx context.Context, todo *Todo) (*Todo, error)
+	Delete(ctx context.Context, todo *Todo) error
 }
 
 //

@@ -10,6 +10,8 @@ import (
 type TodoInteractor interface {
 	FindTodo(ctx context.Context, input *FindTodoInput) (*FindTodoOutput, error)
 	CreateTodo(ctx context.Context, input *CreateTodoInput) (*CreateTodoOutput, error)
+	UpdateTodo(ctx context.Context, input *UpdateTodoInput) (*UpdateTodoOutput, error)
+	DeleteTodo(ctx context.Context, input *DeleteTodoInput) (*DeleteTodoOutput, error)
 }
 
 type FindTodoInput struct {
@@ -25,6 +27,23 @@ type CreateTodoInput struct {
 }
 
 type CreateTodoOutput struct {
+	TodoID string
+}
+
+type UpdateTodoInput struct {
+	TodoID  string
+	Content string
+}
+
+type UpdateTodoOutput struct {
+	Todo *models.Todo
+}
+
+type DeleteTodoInput struct {
+	TodoID string
+}
+
+type DeleteTodoOutput struct {
 	TodoID string
 }
 
@@ -67,6 +86,50 @@ func (i *todoInteractor) CreateTodo(ctx context.Context, input *CreateTodoInput)
 	}
 
 	return &CreateTodoOutput{
+		TodoID: todo.ID,
+	}, nil
+}
+
+func (i *todoInteractor) UpdateTodo(ctx context.Context, input *UpdateTodoInput) (*UpdateTodoOutput, error) {
+	todo, err := i.todoRepository.Find(
+		ctx,
+		input.TodoID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	todo.Content = input.Content
+	updatedTodo, err := i.todoRepository.Update(
+		ctx,
+		todo,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &UpdateTodoOutput{
+		Todo: updatedTodo,
+	}, nil
+}
+
+func (i *todoInteractor) DeleteTodo(ctx context.Context, input *DeleteTodoInput) (*DeleteTodoOutput, error) {
+	todo, err := i.todoRepository.Find(
+		ctx,
+		input.TodoID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := i.todoRepository.Delete(
+		ctx,
+		todo,
+	); err != nil {
+		return nil, err
+	}
+
+	return &DeleteTodoOutput{
 		TodoID: todo.ID,
 	}, nil
 }

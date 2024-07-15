@@ -21,19 +21,31 @@ func NewTodoController(i *do.Injector) (*TodoController, error) {
 func (c *TodoController) Mount(group *echo.Group) {
 	group.GET("/:id", c.Show)
 	group.POST("/", c.Create)
+	group.PATCH("/:id", c.Update)
+	group.DELETE("/:id", c.Delete)
 }
 
 func (c *TodoController) Show(ec echo.Context) error {
-	response, err := c.todoInteractor.FindTodo(
+	params := &struct {
+		TodoID string `param:"id" validate:"uuid,required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	output, err := c.todoInteractor.FindTodo(
 		ec.Request().Context(),
 		&usecases.FindTodoInput{
-			TodoID: ec.Param("id"),
+			TodoID: params.TodoID,
 		},
 	)
 	if err != nil {
 		return err
 	}
-	return ec.JSON(http.StatusOK, response)
+	return ec.JSON(http.StatusOK, output)
 }
 
 func (c *TodoController) Create(ec echo.Context) error {
@@ -47,7 +59,7 @@ func (c *TodoController) Create(ec echo.Context) error {
 		return err
 	}
 
-	todo, err := c.todoInteractor.CreateTodo(
+	output, err := c.todoInteractor.CreateTodo(
 		ec.Request().Context(),
 		&usecases.CreateTodoInput{
 			Content: params.Content,
@@ -57,6 +69,54 @@ func (c *TodoController) Create(ec echo.Context) error {
 		return err
 	}
 	return ec.JSON(http.StatusOK, map[string]string{
-		"id": todo.TodoID,
+		"id": output.TodoID,
 	})
+}
+
+func (c *TodoController) Update(ec echo.Context) error {
+	params := &struct {
+		TodoID  string `param:"id" validate:"uuid,required"`
+		Content string `json:"content" validate:"required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	output, err := c.todoInteractor.UpdateTodo(
+		ec.Request().Context(),
+		&usecases.UpdateTodoInput{
+			TodoID:  params.TodoID,
+			Content: params.Content,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return ec.JSON(http.StatusOK, output)
+}
+
+func (c *TodoController) Delete(ec echo.Context) error {
+	params := &struct {
+		TodoID string `param:"id" validate:"uuid,required"`
+	}{}
+	if err := ec.Bind(params); err != nil {
+		return err
+	}
+	if err := ec.Validate(params); err != nil {
+		return err
+	}
+
+	output, err := c.todoInteractor.DeleteTodo(
+		ec.Request().Context(),
+		&usecases.DeleteTodoInput{
+			TodoID: params.TodoID,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return ec.JSON(http.StatusOK, output.TodoID)
 }

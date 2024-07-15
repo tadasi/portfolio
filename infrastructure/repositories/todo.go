@@ -23,13 +23,13 @@ func (r *TodoRepository) Find(ctx context.Context, id string) (*models.Todo, err
 	if err != nil {
 		return nil, err
 	}
-	todo, err := tables.Todos(
+	record, err := tables.Todos(
 		tables.TodoWhere.ID.EQ(id),
 	).One(ctx, db)
 	if err != nil {
 		return nil, err
 	}
-	return r.convertToModel(todo), nil
+	return r.convertToModel(record), nil
 }
 
 func (r *TodoRepository) Create(ctx context.Context, todo *models.Todo) error {
@@ -39,6 +39,30 @@ func (r *TodoRepository) Create(ctx context.Context, todo *models.Todo) error {
 	}
 	record := r.convertToTable(todo)
 	if err := record.Insert(ctx, db, boil.Infer()); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *TodoRepository) Update(ctx context.Context, todo *models.Todo) (*models.Todo, error) {
+	db, err := mysql.Open()
+	if err != nil {
+		return nil, err
+	}
+	record := r.convertToTable(todo)
+	if _, err := record.Update(ctx, db, boil.Infer()); err != nil {
+		return nil, err
+	}
+	return r.convertToModel(record), nil
+}
+
+func (r *TodoRepository) Delete(ctx context.Context, todo *models.Todo) error {
+	db, err := mysql.Open()
+	if err != nil {
+		return err
+	}
+	record := r.convertToTable(todo)
+	if _, err := record.Delete(ctx, db); err != nil {
 		return err
 	}
 	return nil
