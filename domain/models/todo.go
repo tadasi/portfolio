@@ -2,7 +2,9 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"time"
+	"unicode/utf8"
 
 	"github.com/google/uuid"
 	"github.com/samber/do"
@@ -13,12 +15,22 @@ import (
 // Entities
 //
 
+const MaxContentLength = 1000
+
 type Todo struct {
 	ID          string     // TODO ID
 	Content     string     // TODO 内容
 	CreatedAt   time.Time  // TODO 作成日時
 	UpdatedAt   time.Time  // TODO 更新日時
 	CompletedAt *time.Time // TODO 完了日時
+}
+
+func (t *Todo) Validate() error {
+	if utf8.RuneCountInString(t.Content) > MaxContentLength {
+		return fmt.Errorf("content is too long")
+	}
+
+	return nil
 }
 
 func (t *Todo) SetContent(content string) {

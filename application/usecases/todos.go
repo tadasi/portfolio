@@ -87,6 +87,10 @@ func (i *todoInteractor) CreateTodo(ctx context.Context, input *CreateTodoInput)
 		Content: input.Content,
 	})
 
+	if err := todo.Validate(); err != nil {
+		return nil, err
+	}
+
 	if err := i.todoRepository.Create(
 		ctx,
 		todo,
@@ -109,6 +113,10 @@ func (i *todoInteractor) UpdateTodo(ctx context.Context, input *UpdateTodoInput)
 	}
 
 	todo.SetContent(input.Content)
+	if err := todo.Validate(); err != nil {
+		return nil, err
+	}
+
 	updatedTodo, err := i.todoRepository.Update(
 		ctx,
 		todo,
@@ -151,6 +159,10 @@ func (i *todoInteractor) CompleteTodo(ctx context.Context, input *CompleteTodoIn
 	}
 
 	todo.Complete()
+	if err := todo.Validate(); err != nil {
+		return nil, err
+	}
+
 	updatedTodo, err := i.todoRepository.Update(
 		ctx,
 		todo,
@@ -174,6 +186,10 @@ func (i *todoInteractor) UncompleteTodo(ctx context.Context, input *UncompleteTo
 	}
 
 	todo.Uncomplete()
+	if err := todo.Validate(); err != nil {
+		return nil, err
+	}
+
 	updatedTodo, err := i.todoRepository.Update(
 		ctx,
 		todo,
