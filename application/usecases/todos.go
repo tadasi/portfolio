@@ -2,10 +2,8 @@ package usecases
 
 import (
 	"context"
-	"time"
 
 	"github.com/samber/do"
-	"github.com/samber/lo"
 	"github.com/tadasi/portfolio/domain/models"
 )
 
@@ -110,7 +108,7 @@ func (i *todoInteractor) UpdateTodo(ctx context.Context, input *UpdateTodoInput)
 		return nil, err
 	}
 
-	todo.Content = input.Content
+	todo.SetContent(input.Content)
 	updatedTodo, err := i.todoRepository.Update(
 		ctx,
 		todo,
@@ -152,7 +150,7 @@ func (i *todoInteractor) CompleteTodo(ctx context.Context, input *CompleteTodoIn
 		return nil, err
 	}
 
-	todo.CompletedAt = lo.ToPtr(time.Now())
+	todo.Complete()
 	updatedTodo, err := i.todoRepository.Update(
 		ctx,
 		todo,
@@ -175,7 +173,7 @@ func (i *todoInteractor) UncompleteTodo(ctx context.Context, input *UncompleteTo
 		return nil, err
 	}
 
-	todo.CompletedAt = nil
+	todo.Uncomplete()
 	updatedTodo, err := i.todoRepository.Update(
 		ctx,
 		todo,

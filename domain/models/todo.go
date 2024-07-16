@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/samber/do"
+	"github.com/samber/lo"
 )
 
 //
@@ -19,6 +20,22 @@ type Todo struct {
 	UpdatedAt   time.Time  // TODO 更新日時
 	CompletedAt *time.Time // TODO 完了日時
 }
+
+func (t *Todo) SetContent(content string) {
+	t.Content = content
+}
+
+func (t *Todo) Complete() {
+	t.CompletedAt = lo.ToPtr(time.Now())
+}
+
+func (t *Todo) Uncomplete() {
+	t.CompletedAt = nil
+}
+
+//
+// Repositories
+//
 
 type TodoRepository interface {
 	Find(ctx context.Context, id string) (*Todo, error)
